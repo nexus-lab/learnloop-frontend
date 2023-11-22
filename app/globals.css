@@ -74,3 +74,25 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* GlobalStyles.css */
+@keyframes gradientCycle {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.hover-animate-gradient {
+  background-size: 200% 200%;
+  transition: background 0.5s ease-in-out;
+}
+
+.hover-animate-gradient:hover {
+  animation: gradientCycle 3s ease infinite;
+}
