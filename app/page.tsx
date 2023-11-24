@@ -1,8 +1,8 @@
-'use client'
+"use client";
 import { TransparentButton } from "@/components/TransparentButton";
 import Image from "next/image";
 import { GradientButton } from "@/components/GradientButton";
-import { useRouter } from "next/navigation"; // Import useRouter
+import { useRouter } from "next/navigation"; // Corrected import statement
 
 export default function Home() {
   const router = useRouter(); // Initialize the router
@@ -18,39 +18,54 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-main h-screen px-20">
-      {/* Navigation */}
-      <div className="flex justify-center items-center mb-32 pt-10">
-        <Image src="/learnloop.svg" width={300} height={300} alt="Learnloop" />
-        <TransparentButton variant={"ghost"} className="ml-auto" onClick={handleLoginClick}>
-          Login
-        </TransparentButton>
-        <GradientButton className="ml-4" onClick={handleSignupClick}>Get Started</GradientButton>
-      </div>
+    <div className="flex flex-col h-screen">
+      {/* Top Bar */}
+      <div className="h-10 bg-top"></div>
 
-      <div className="flex justify-between items-center" aria-label="features">
-        {/* Feature description */}
-        <div className="flex-1">
-          <div>
-            <h1 className="text-2xl font-bold text-white">
-              Generate your Quiz with the Power of AI
-            </h1>
-            <p className="mt-4 text-white">
-              Need a quick refresher on some material for an upcoming test? Try
-              the quiz generator and simply upload your textbook, select the
-              study chapters and generate your quiz.
-            </p>
-          </div>
-        </div>
-        {/* Feature image */}
-        <div className="flex-1">
+      {/* Main Column - Fills remaining space */}
+      <div className="flex-1 px-20 bg-main overflow-auto"
+           style={{
+             backgroundImage: "url(/pattern.svg)",
+             backgroundRepeat: "no-repeat",
+             backgroundPosition: "center", // Centers the background image
+           }}
+      >
+        {/* Navigation */}
+        <div className="flex justify-center items-center pt-10 mb-40">
           <Image
-            className="ml-auto"
-            src="/pc.png"
-            width={500}
-            height={500}
-            alt="Quiz"
+            src="/real.svg"
+            width={200}
+            height={200}
+            alt="Learnloop"
           />
+          <TransparentButton
+            variant={"ghost"}
+            className="ml-auto text-md font-regular"
+            onClick={handleLoginClick}
+          >
+            Login
+          </TransparentButton>
+        </div>
+
+        <div
+          className="flex flex-col justify-center space-y-20"
+          aria-label="features"
+        >
+          <h1 className="text-4xl text-center font-bold text-white">
+            Learn differently with the power of AI
+          </h1>
+          <p className="text-lg text-greytext px-72 text-center">
+            Revolutionize your study sessions with Learnloop&apos;s AI-powered quiz
+            generator. Upload your textbook, select chapters, and get a tailored
+            quiz instantly. Beyond quizzes, envision a future with Learnloop&apos;s
+            expanding AI tools, including an interactive coding playground.
+          </p>
+          <GradientButton
+            className="ml-4 w-[36rem] h-12 self-center"
+            onClick={handleSignupClick}
+          >
+            Get Started
+          </GradientButton>
         </div>
       </div>
     </div>

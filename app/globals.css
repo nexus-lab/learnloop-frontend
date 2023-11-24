@@ -96,3 +96,13 @@
 .hover-animate-gradient:hover {
   animation: gradientCycle 3s ease infinite;
 }
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body > div {
+    height: 100%;
+}
