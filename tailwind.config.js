@@ -22,6 +22,8 @@ module.exports = {
         mainblue: "#0432AA",
         mainpink: "#AB00FF",
         greytext: "#E3E3E3",
+        ring: "#C8C8C8",
+        ringactive: "#6D767E",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

@@ -106,3 +106,7 @@ body {
 body > div {
     height: 100%;
 }
+
+.ring-offset-background {
+  --tw-ring-offset-color: #6D767E;
+}
