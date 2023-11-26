@@ -1,5 +1,4 @@
 import { Spacer } from "@/components/Spacer";
-import Image from "next/image";
 import Lottie from "lottie-react";
 import study from "@/public/study.json";
 

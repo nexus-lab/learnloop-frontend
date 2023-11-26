@@ -24,6 +24,7 @@ import { TransparentButton } from "@/components/TransparentButton";
 import { useRouter } from "next/navigation";
 import { signupUser } from "@/lib/api/auth/routes";
 import { useState } from "react";
+import useViewTransitionRouter from "@/src/hooks/useViewTransitionRouter";
 
 const formSchema: any = z
   .object({
@@ -61,8 +62,12 @@ const formSchema: any = z
 
 export default function ProfileForm() {
   // Router
-  const router = useRouter();
+  const router = useViewTransitionRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const goBack = () => {
+    router.push("/");
+  }
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -75,7 +80,7 @@ export default function ProfileForm() {
 
   const onClickForgotPassword = (e: any) => {
     e.preventDefault();
-    router.push("/forgot-password");
+    router.push("/login");
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -83,7 +88,11 @@ export default function ProfileForm() {
 
     try {
       const response = await signupUser(values);
-      console.log(response);
+      
+      if (response.status === 200) {
+        router.push("/signup/confirm?email=" + values.email);
+      }
+      
       // Simulate a delay
       setTimeout(() => {
         setIsSubmitting(false);
@@ -100,7 +109,7 @@ export default function ProfileForm() {
   return (
     <Layout>
       <div className="mt-20">
-        <Image src="/real.svg" width={200} height={200} alt="Learnloop" />
+        <Image src="/real.svg" width={200} height={200} alt="Learnloop" onClick={goBack} className="hover:cursor-pointer" />
         <Spacer />
         <Heading>Signup</Heading>
         <Spacer />
