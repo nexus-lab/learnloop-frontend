@@ -1,5 +1,3 @@
-"use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -61,7 +59,15 @@ export default function Login() {
     setIsSubmitting(true);
     try {
       const response = await loginUser(values);
-      console.log(response);
+      
+      if (response.status === 200) {
+        // Set cookies instead of using localStorage
+        document.cookie = `access_token=${response.data.access_token}; path=/; max-age=${response.data.expires_in};`;
+        document.cookie = `refresh_token=${response.data.refresh_token}; path=/;`;
+        document.cookie = `id_token=${response.data.id_token}; path=/; max-age=${response.data.expires_in};`;
+  
+        router.push("/");
+      }
 
       if (response.error) {
         switch (response.error) {

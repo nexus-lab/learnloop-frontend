@@ -2,7 +2,7 @@
 module.exports = {
   darkMode: ["class"],
   content: [
-    './src/app/**/*.{ts,tsx}',
+    './src/pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
 	],
@@ -23,6 +23,7 @@ module.exports = {
         greytext: "#E3E3E3",
         ring: "#C8C8C8",
         ringactive: "#6D767E",
+        dashboard: "#0F0F0F",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

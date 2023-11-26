@@ -1,12 +1,33 @@
-"use client";
 import { TransparentButton } from "@/components/TransparentButton";
 import Image from "next/image";
 import { GradientButton } from "@/components/GradientButton";
 import useViewTransitionRouter from "../hooks/useViewTransitionRouter";
 import HeadElements from "@/components/misc/HeadElements";
+import { isAuthenticated } from "@/lib/api/auth/helper";
+import { useEffect, useState } from "react";
+import Layout from "@/layouts/dashboard/layout";
+
+import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
+ 
+ 
+// export async function getServerSideProps(context) {
+//   const token = context.req.cookies['id_token'];
+//   if (!token || !isTokenValid(token)) {
+//     return {
+//       redirect: {
+//         destination: '/dashboard',
+//         permanent: false,
+//       },
+//     };
+//   }
+
+//   return { props: {} };
+// }
+ 
 
 export default function Home() {
   const router = useViewTransitionRouter(); // Initialize the router
+  const [authStatus, setAuthStatus] = useState(false);
   // animated router
   // Handler for login navigation
   const handleLoginClick = () => {
@@ -20,6 +41,16 @@ export default function Home() {
 
   const goBack = () => {
     router.push("/");
+  };
+
+  useEffect(() => {
+    setAuthStatus(isAuthenticated());
+  }, []);
+
+  if (authStatus) {
+    return <Layout>
+      <p>awddwa</p>
+    </Layout>;
   }
 
   return (
@@ -40,7 +71,14 @@ export default function Home() {
         >
           {/* Navigation */}
           <div className="flex justify-center items-center pt-10 mb-40">
-            <Image src="/real.svg" width={200} height={200} alt="Learnloop" className="cursor-pointer" onClick={goBack} />
+            <Image
+              src="/real.svg"
+              width={200}
+              height={200}
+              alt="Learnloop"
+              className="cursor-pointer"
+              onClick={goBack}
+            />
             <TransparentButton
               variant={"ghost"}
               className="ml-auto text-md font-regular"
