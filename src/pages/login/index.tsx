@@ -1,10 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Heading } from "@/components/Heading";
-import { Spacer } from "@/components/Spacer";
-import HeadElements from "@/components/misc/HeadElements";
-import Layout from "@/layouts/landing/layout";
+import { Heading } from "@/src/components/Heading";
+import { Spacer } from "@/src/components/Spacer";
+import HeadElements from "@/src/components/misc/HeadElements";
+import Layout from "@/src/layouts/landing/layout";
 import useViewTransitionRouter from "@/src/hooks/useViewTransitionRouter";
 import Image from "next/image";
 import {
@@ -14,12 +14,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { GradientButton } from "@/components/GradientButton";
+} from "@/src/components/ui/form";
+import { Input } from "@/src/components/ui/input";
+import { GradientButton } from "@/src/components/GradientButton";
 import { useState } from "react";
 import { loginUser, resendVerificationEmail } from "@/lib/api/auth/routes";
-import { TransparentButton } from "@/components/TransparentButton";
+import { TransparentButton } from "@/src/components/TransparentButton";
+import { useSession } from "@/src/contexts/SessionContext";
+
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
@@ -30,7 +32,7 @@ export default function Login() {
   const router = useViewTransitionRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
+  const { setSession } = useSession();
 
   const goBack = () => {
     router.push("/");
@@ -65,6 +67,9 @@ export default function Login() {
         document.cookie = `access_token=${response.data.access_token}; path=/; max-age=${response.data.expires_in};`;
         document.cookie = `refresh_token=${response.data.refresh_token}; path=/;`;
         document.cookie = `id_token=${response.data.id_token}; path=/; max-age=${response.data.expires_in};`;
+
+        // Get user info
+        
   
         router.push("/");
       }

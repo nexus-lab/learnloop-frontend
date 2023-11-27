@@ -1,4 +1,4 @@
-import { Spacer } from "@/components/Spacer";
+import { Spacer } from "@/src/components/Spacer";
 import Lottie from "lottie-react";
 import study from "@/public/study.json";
 
