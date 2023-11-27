@@ -161,7 +161,7 @@ export default function Login() {
         <Spacer />
         <TransparentButton
           className="bg-transparent hover:bg-transparent text-gray-400 flex ml-auto mr-auto"
-          onClick={onClickSignup}
+          onClick={onClickSignup} data-testid="signup"
         >
           <p>Don&apos;t have an account?</p>
           <span className="text-mainblue font-bold ml-2">Signup</span>
