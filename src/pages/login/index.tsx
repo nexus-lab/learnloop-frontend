@@ -21,6 +21,7 @@ import { useState } from "react";
 import { loginUser, resendVerificationEmail } from "@/lib/api/auth/routes";
 import { TransparentButton } from "@/src/components/TransparentButton";
 import { useSession } from "@/src/contexts/SessionContext";
+import Link from "next/link";
 
 
 const formSchema = z.object({
@@ -68,10 +69,10 @@ export default function Login() {
         document.cookie = `refresh_token=${response.data.refresh_token}; path=/;`;
         document.cookie = `id_token=${response.data.id_token}; path=/; max-age=${response.data.expires_in};`;
 
-        // Get user info
-        
-  
-        router.push("/");
+        setSession(response.data.id_token);
+
+        // Get user info  
+        router.push("/dashboard");
       }
 
       if (response.error) {
@@ -148,12 +149,12 @@ export default function Login() {
                 </FormItem>
               )}
             />
-            <TransparentButton
+            <Link href="/forgot-password"
               className="bg-transparent hover:bg-transparent text-gray-400 flex ml-auto"
               onClick={onClickForgotPassword}
             >
-              Forgot Password?
-            </TransparentButton>
+              <span className="ml-auto text-sm">Forgot Password?</span>
+            </Link>
             <GradientButton
               loading={isSubmitting}
               type="submit"
@@ -164,13 +165,13 @@ export default function Login() {
           </form>
         </Form>
         <Spacer />
-        <TransparentButton
+        <Link href="/signup"
           className="bg-transparent hover:bg-transparent text-gray-400 flex ml-auto mr-auto"
           onClick={onClickSignup}
         >
-          <p>Don&apos;t have an account?</p>
-          <span className="text-mainblue font-bold ml-2">Signup</span>
-        </TransparentButton>
+          <p className="ml-auto text-sm">Don&apos;t have an account?</p>
+          <span className="text-mainblue font-bold ml-2 text-sm mr-auto">Signup</span>
+        </Link>
         {/* Add any additional buttons or links here */}
       </div>
     </Layout>

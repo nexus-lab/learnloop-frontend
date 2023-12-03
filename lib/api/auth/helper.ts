@@ -19,10 +19,7 @@ export function isAuthenticated(req: any) {
     const expires = new Date(decoded.exp * 1000);
     const currentDate = new Date();
 
-    console.log(decoded);
-
-
-    authenticated = currentDate > expires;
+    authenticated = currentDate < expires;
   }
 
   return authenticated;

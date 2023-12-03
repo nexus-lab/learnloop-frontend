@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation";
 import { signupUser } from "@/lib/api/auth/routes";
 import { useState } from "react";
 import useViewTransitionRouter from "@/src/hooks/useViewTransitionRouter";
+import Link from "next/link";
 
 const formSchema: any = z
   .object({
@@ -184,12 +185,12 @@ export default function ProfileForm() {
               )}
             />
 
-            <TransparentButton
+            <Link href="/forgot-password"
               className="bg-transparent hover:bg-transparent text-gray-400 flex ml-auto"
               onClick={onClickForgotPassword}
             >
-              Forgot Password?
-            </TransparentButton>
+              <span className="ml-auto text-sm">Forgot Password?</span>
+            </Link>
 
             <GradientButton
               loading={isSubmitting}
@@ -201,13 +202,13 @@ export default function ProfileForm() {
           </form>
         </Form>
         <Spacer />
-        <TransparentButton
-          className="bg-transparent hover:bg-transparent text-gray-400 flex ml-auto mr-auto"
+        <Link href="/login"
+          className="bg-transparent hover:bg-transparent text-gray-400 flex"
           onClick={onClickForgotPassword}
         >
-          <p>Already have an account?</p>
-          <span className="text-mainblue font-bold ml-2">Login</span>
-        </TransparentButton>
+          <p className="ml-auto text-sm">Already have an account?</p>
+          <span className="text-mainblue font-bold ml-2 text-sm mr-auto">Login</span>
+        </Link>
       </div>
     </Layout>
   );

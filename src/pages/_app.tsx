@@ -6,6 +6,9 @@ import "./globals.css";
 const App = ({ Component, pageProps }: { Component: any; pageProps: any }) => {
   const router = useRouter();
 
+  // If page layout is available, use it. Else return the page
+  const getLayout = Component.getLayout || ((page: React.ReactNode) => page);
+
   useNextRouterViewTransitions({
     events: {
       on: (event, callback) => router.events.on(event as any, callback),
@@ -15,7 +18,7 @@ const App = ({ Component, pageProps }: { Component: any; pageProps: any }) => {
 
   return (
     <SessionProvider>
-      <Component {...pageProps} />
+      {getLayout(<Component {...pageProps} />)}
     </SessionProvider>
   );
 };
