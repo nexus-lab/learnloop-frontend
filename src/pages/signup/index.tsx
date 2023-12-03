@@ -1,9 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Button } from "@/components/ui/button";
-import { Heading } from "@/components/Heading";
-import { Spacer } from "@/components/Spacer";
+import { Button } from "@/src/components/ui/button";
+import { Heading } from "@/src/components/Heading";
+import { Spacer } from "@/src/components/Spacer";
 import Image from "next/image";
 
 import {
@@ -14,15 +14,16 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import Layout from "@/layouts/landing/layout";
-import { GradientButton } from "@/components/GradientButton";
-import { TransparentButton } from "@/components/TransparentButton";
+} from "@/src/components/ui/form";
+import { Input } from "@/src/components/ui/input";
+import Layout from "@/src/layouts/landing/layout";
+import { GradientButton } from "@/src/components/GradientButton";
+import { TransparentButton } from "@/src/components/TransparentButton";
 import { useRouter } from "next/navigation";
 import { signupUser } from "@/lib/api/auth/routes";
 import { useState } from "react";
 import useViewTransitionRouter from "@/src/hooks/useViewTransitionRouter";
+import Link from "next/link";
 
 const formSchema: any = z
   .object({
@@ -184,12 +185,12 @@ export default function ProfileForm() {
               )}
             />
 
-            <TransparentButton
+            <Link href="/forgot-password"
               className="bg-transparent hover:bg-transparent text-gray-400 flex ml-auto"
               onClick={onClickForgotPassword}
             >
-              Forgot Password?
-            </TransparentButton>
+              <span className="ml-auto text-sm">Forgot Password?</span>
+            </Link>
 
             <GradientButton
               loading={isSubmitting}
@@ -201,13 +202,13 @@ export default function ProfileForm() {
           </form>
         </Form>
         <Spacer />
-        <TransparentButton
-          className="bg-transparent hover:bg-transparent text-gray-400 flex ml-auto mr-auto"
+        <Link href="/login"
+          className="bg-transparent hover:bg-transparent text-gray-400 flex"
           onClick={onClickForgotPassword}
         >
-          <p>Already have an account?</p>
-          <span className="text-mainblue font-bold ml-2">Login</span>
-        </TransparentButton>
+          <p className="ml-auto text-sm">Already have an account?</p>
+          <span className="text-mainblue font-bold ml-2 text-sm mr-auto">Login</span>
+        </Link>
       </div>
     </Layout>
   );

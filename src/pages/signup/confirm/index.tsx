@@ -1,9 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Button } from "@/components/ui/button";
-import { Heading } from "@/components/Heading";
-import { Spacer } from "@/components/Spacer";
+import { Button } from "@/src/components/ui/button";
+import { Heading } from "@/src/components/Heading";
+import { Spacer } from "@/src/components/Spacer";
 import Image from "next/image";
 
 import {
@@ -14,11 +14,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import Layout from "@/layouts/landing/layout";
-import { GradientButton } from "@/components/GradientButton";
-import { TransparentButton } from "@/components/TransparentButton";
+} from "@/src/components/ui/form";
+import { Input } from "@/src/components/ui/input";
+import Layout from "@/src/layouts/landing/layout";
+import { GradientButton } from "@/src/components/GradientButton";
+import { TransparentButton } from "@/src/components/TransparentButton";
 import { useEffect, useState } from "react";
 import useViewTransitionRouter from "@/src/hooks/useViewTransitionRouter";
 import { useSearchParams } from "next/navigation";

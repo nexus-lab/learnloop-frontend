@@ -1,11 +1,11 @@
-import { TransparentButton } from "@/components/TransparentButton";
+import { TransparentButton } from "../components/TransparentButton";
 import Image from "next/image";
-import { GradientButton } from "@/components/GradientButton";
+import { GradientButton } from "../components/GradientButton";
 import useViewTransitionRouter from "../hooks/useViewTransitionRouter";
-import HeadElements from "@/components/misc/HeadElements";
+import HeadElements from "../components/misc/HeadElements";
 import { isAuthenticated } from "@/lib/api/auth/helper";
 import { useEffect, useState } from "react";
-import Layout from "@/layouts/dashboard/layout";
+import Layout from "../layouts/dashboard/layout";
 
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
  
@@ -27,7 +27,6 @@ import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
 
 export default function Home() {
   const router = useViewTransitionRouter(); // Initialize the router
-  const [authStatus, setAuthStatus] = useState(false);
   // animated router
   // Handler for login navigation
   const handleLoginClick = () => {
@@ -42,16 +41,6 @@ export default function Home() {
   const goBack = () => {
     router.push("/");
   };
-
-  useEffect(() => {
-    setAuthStatus(isAuthenticated());
-  }, []);
-
-  if (authStatus) {
-    return <Layout>
-      <p>awddwa</p>
-    </Layout>;
-  }
 
   return (
     <>

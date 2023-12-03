@@ -1,19 +1,26 @@
+// utils/auth.js
+import cookie from "cookie";
 import { jwtDecode } from "jwt-decode";
 
-export function isAuthenticated() {
-  const token = localStorage.getItem('access_token');
-  if (!token) return false;
+export function parseCookies(req: any) {
+  return cookie.parse(req ? req.headers.get('cookie') || "" : document.cookie);
+}
 
-  try {
-    const decoded = jwtDecode(token);
-    const exp = decoded.exp;
-    let valid = false;
+export function isAuthenticated(req: any) {
+  let authenticated: boolean = false;
+  const cookies = parseCookies(req);
+  const token = cookies.access_token;
 
-    if (exp) {
-        valid = exp > Date.now() / 1000;
-    }
-    return valid;
-  } catch (error) {
-    return false;
+
+
+  // Verify token session
+  if (token) {
+    const decoded: any = jwtDecode(token);
+    const expires = new Date(decoded.exp * 1000);
+    const currentDate = new Date();
+
+    authenticated = currentDate < expires;
   }
+
+  return authenticated;
 }
