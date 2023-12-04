@@ -40,7 +40,7 @@
     "jwt-decode": "^4.0.0",
     "lottie-react": "^2.4.0",
     "lucide-react": "^0.292.0",
-    "next": "14.0.3",
+    "next": "^14.0.3",
     "next-auth": "^4.24.5",
     "react": "^18",
     "react-dom": "^18",
@@ -51,8 +51,8 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@types/cookie": "^0.6.0",
     "@playwright/test": "^1.40.0",
+    "@types/cookie": "^0.6.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
