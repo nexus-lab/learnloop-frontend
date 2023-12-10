@@ -1,26 +1,31 @@
 // utils/auth.js
 import cookie from "cookie";
-import { jwtDecode } from "jwt-decode";
+import { CognitoJwtVerifier } from "aws-jwt-verify";
 
 export function parseCookies(req: any) {
-  return cookie.parse(req ? req.headers.get('cookie') || "" : document.cookie);
+  return cookie.parse(req ? req.headers.get("cookie") || "" : document.cookie);
 }
 
-export function isAuthenticated(req: any) {
-  let authenticated: boolean = false;
-  const cookies = parseCookies(req);
-  const token = cookies.access_token;
+export async function isAuthenticated(token: string) {
+  // Create a verifier for your Cognito User Pool
+  const verifier = CognitoJwtVerifier.create({
+    userPoolId: process.env.COGNITO_USER_POOL_ID as string,
+    tokenUse: "access", // 'access' or 'id'
+    clientId: process.env.COGNITO_CLIENT_ID as string, // Optionally verify the client id
+    region: process.env.COGNITO_REGION as string,
+  });
 
 
-
-  // Verify token session
-  if (token) {
-    const decoded: any = jwtDecode(token);
-    const expires = new Date(decoded.exp * 1000);
-    const currentDate = new Date();
-
-    authenticated = currentDate < expires;
+  if (!token) {
+    return false;
   }
 
-  return authenticated;
+  try {
+    // This will throw an error if the token is invalid
+    await verifier.verify(token);
+    return true;
+  } catch (error) {
+    // console.error("Token validation error:", error);
+    return false;
+  }
 }

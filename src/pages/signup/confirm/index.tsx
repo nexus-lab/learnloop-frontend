@@ -68,14 +68,15 @@ export default function ProfileForm() {
 
     try {
       const email = searchParams.get("email");
-      const response = await resendVerificationEmail(email as string);
+      const response = await fetch("/api/auth/resend", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({email}),
+      });
 
       console.log(response);
-
-      if (response.error) {
-        console.log(response);
-        return;
-      }
     } catch (e) {
       console.log(e);
     }
@@ -86,9 +87,12 @@ export default function ProfileForm() {
     const email = searchParams.get("email");
 
     try {
-      const response = await verifyUser({
-        email: email as string,
-        confirmation_code: values.confirmation_code,
+      const response = await fetch("/api/auth/confirm", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({email: email as string, confirmation_code: values.confirmation_code}),
       });
       
       if (response.status === 200) {

@@ -18,7 +18,13 @@ import {
 } from "@/src/components/ui/dropdown-menu";
 import Image from 'next/image';
 
-export function UserMenu({ imageUrl = 'https://images.unsplash.com/photo-1682687220866-c856f566f1bd', name='Francisco Ayala'}: { imageUrl: string; name: string }) {
+interface UserMenuProps {
+  imageUrl?: string;
+  name?: string;
+  onLogout: () => void;
+}
+
+export function UserMenu({ imageUrl = 'https://images.unsplash.com/photo-1682687220866-c856f566f1bd', name = 'Francisco Ayala', onLogout }: UserMenuProps) {
   return (
     <DropdownMenu>
       {/* Image-Name-IconButton Layout */}
@@ -51,7 +57,7 @@ export function UserMenu({ imageUrl = 'https://images.unsplash.com/photo-1682687
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="bg-divider" />
-        <DropdownMenuItem className="bg-red-700 hover:bg-red-500 focus:bg-red-500 active:bg-red-500">
+        <DropdownMenuItem className="bg-red-700 hover:bg-red-500 focus:bg-red-500 active:bg-red-500" onClick={onLogout}>
           <LogOut className="mr-2 h-4 w-4 text-white" />
           <span className="text-white">Log out</span>
         </DropdownMenuItem>

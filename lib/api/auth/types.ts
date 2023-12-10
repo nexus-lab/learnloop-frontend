@@ -15,3 +15,9 @@ export interface VerifyParams {
     confirmation_code: number;
     email: string;
 }
+
+export interface ForgotResetParams {
+    confirmation_code: number;
+    email: string;
+    password: string;
+}

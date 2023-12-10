@@ -19,20 +19,25 @@ import { Input } from "@/src/components/ui/input";
 import Layout from "@/src/layouts/landing/layout";
 import { GradientButton } from "@/src/components/GradientButton";
 import { TransparentButton } from "@/src/components/TransparentButton";
-import { useRouter } from "next/navigation";
-import { signupUser } from "@/lib/api/auth/routes";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useViewTransitionRouter from "@/src/hooks/useViewTransitionRouter";
-import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { resendVerificationEmail, verifyUser } from "@/lib/api/auth/routes";
 
 const formSchema: any = z
   .object({
-    name: z.string().min(2, {
-      message: "Please enter a valid name.",
-    }),
-    email: z.string().email({
-      message: "Please enter a valid email address.",
-    }),
+    confirmation_code: z
+      .string()
+      .min(6, {
+        message: "Confirmation code must be 6 characters long.",
+      })
+      .refine(
+        (v) => {
+          let n = Number(v);
+          return !isNaN(n) && v?.length > 0;
+        },
+        { message: "Invalid confirmation code." }
+      ),
     password: z
       .string()
       .min(8, {
@@ -63,6 +68,10 @@ export default function ProfileForm() {
   // Router
   const router = useViewTransitionRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [countdown, setCountdown] = useState(0);
+  const [isResendDisabled, setIsResendDisabled] = useState(false);
+
+  const searchParams = useSearchParams();
 
   const goBack = () => {
     router.push("/");
@@ -72,35 +81,52 @@ export default function ProfileForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      confirmation_code: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
-  const onClickForgotPassword = (e: any) => {
+  const onClickResend = async (e: any) => {
     e.preventDefault();
-    router.push("/forgot");
-  };
+    setIsResendDisabled(true);
+    setCountdown(30);
 
-  const onClickLogin = (e: any) => {
-    e.preventDefault();
-    router.push("/login");
-  }
+    try {
+      const email = searchParams.get("email");
+      const response = await fetch(`/api/auth/forgot?email=${email}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      console.log(response);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
+    const email = searchParams.get("email");
 
     try {
-      const response = await fetch("/api/auth/signup", {
+      const response = await fetch("/api/auth/forgot", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify({
+          email: email as string,
+          confirmation_code: values.confirmation_code,
+          password: values.password,
+        }),
       });
 
-      if (response.ok) {
-        router.push("/signup/confirm?email=" + values.email);
+      if (response.status === 200) {
+        router.push("/login");
       }
 
       // Simulate a delay
@@ -116,6 +142,20 @@ export default function ProfileForm() {
     }
   }
 
+  useEffect(() => {
+    let interval: any;
+
+    if (countdown > 0) {
+      interval = setInterval(() => {
+        setCountdown(countdown - 1);
+      }, 1000);
+    } else if (countdown === 0) {
+      setIsResendDisabled(false);
+    }
+
+    return () => clearInterval(interval);
+  }, [countdown]);
+
   return (
     <Layout>
       <div className="mt-20">
@@ -128,36 +168,34 @@ export default function ProfileForm() {
           className="hover:cursor-pointer"
         />
         <Spacer />
-        <Heading>Signup</Heading>
+        <Heading>Reset your password</Heading>
         <Spacer />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
               control={form.control}
-              name="name"
+              name="confirmation_code"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-white">Name</FormLabel>
+                  <FormLabel className="text-white">
+                    Confirmation Code
+                  </FormLabel>
                   <FormControl className="bg-transparent border-gray-700">
                     <Input
-                      placeholder="ex: John Doe"
-                      className="focus:border-ring focus-visible:ring-0 focus:outline-none text-white"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage className="text-red-400" />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-white">Email</FormLabel>
-                  <FormControl className="bg-transparent border-gray-700">
-                    <Input
-                      placeholder="ex: example@gmail.com"
+                      placeholder="ex: 012345"
+                      type="number"
+                      minLength={6}
+                      maxLength={6}
+                      min={0}
+                      onInput={(e) => {
+                        // Limit input to 6 characters
+                        if (e.currentTarget.value.length > 6) {
+                          e.currentTarget.value = e.currentTarget.value.slice(
+                            0,
+                            6
+                          );
+                        }
+                      }}
                       className="focus:border-ring focus-visible:ring-0 focus:outline-none text-white"
                       {...field}
                     />
@@ -171,12 +209,12 @@ export default function ProfileForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-white">Password</FormLabel>
+                  <FormLabel className="text-white">New Password</FormLabel>
                   <FormControl className="bg-transparent border-gray-700">
                     <Input
+                      type="password"
                       placeholder="********"
                       className="focus:border-ring focus-visible:ring-0 focus:outline-none text-white"
-                      type="password"
                       {...field}
                     />
                   </FormControl>
@@ -189,7 +227,7 @@ export default function ProfileForm() {
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-white">Confirm Password</FormLabel>
+                  <FormLabel className="text-white">Confirm New Password</FormLabel>
                   <FormControl className="bg-transparent border-gray-700">
                     <Input
                       type="password"
@@ -203,34 +241,37 @@ export default function ProfileForm() {
               )}
             />
 
-            <Link
-              href="/forgot"
+            {/* <TransparentButton
               className="bg-transparent hover:bg-transparent text-gray-400 flex ml-auto"
               onClick={onClickForgotPassword}
             >
-              <span className="ml-auto text-sm">Forgot Password?</span>
-            </Link>
+              Forgot Password?
+            </TransparentButton> */}
 
             <GradientButton
               loading={isSubmitting}
               type="submit"
               className="w-full"
             >
-              Signup
+              Reset Password
             </GradientButton>
           </form>
         </Form>
         <Spacer />
-        <Link
-          href="/login"
-          className="bg-transparent hover:bg-transparent text-gray-400 flex"
-          onClick={onClickLogin}
+        <TransparentButton
+          className="bg-transparent hover:bg-transparent text-gray-400 flex ml-auto mr-auto"
+          onClick={onClickResend}
+          disabled={isResendDisabled}
         >
-          <p className="ml-auto text-sm">Already have an account?</p>
-          <span className="text-mainblue font-bold ml-2 text-sm mr-auto">
-            Login
-          </span>
-        </Link>
+          {isResendDisabled ? (
+            <p>Resend available in {countdown} seconds</p>
+          ) : (
+            <p>Didn&apos;t receive the code?</p>
+          )}
+          {!isResendDisabled && (
+            <span className="text-mainblue font-bold ml-2">Resend code</span>
+          )}
+        </TransparentButton>
       </div>
     </Layout>
   );

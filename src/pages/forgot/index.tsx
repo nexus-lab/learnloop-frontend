@@ -25,12 +25,9 @@ import Link from "next/link";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
-  password: z
-    .string()
-    .min(8, { message: "Password must be at least 8 characters long." }),
 });
 
-export default function Login() {
+export default function ForgotPassword() {
   const router = useViewTransitionRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -38,11 +35,6 @@ export default function Login() {
 
   const goBack = () => {
     router.push("/");
-  };
-
-  const onClickForgotPassword = (e: any) => {
-    e.preventDefault();
-    router.push("/forgot");
   };
 
   const onClickSignup = (e: any) => {
@@ -55,57 +47,36 @@ export default function Login() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
-      password: "",
     },
   });
 
   const onSubmit = async (values: any) => {
-    setErrorMessage("");
+    console.log("hi")
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
+      const response = await fetch(`/api/auth/forgot?email=${values.email}`, {
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(values),
       });
 
       if (response.ok) {
-        // // Get user details
-        // const resp = await fetch("/api/auth/user", {
-        //   method: "GET",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        // });
-
-        // if (resp.ok) {
-        //   const sessionData = await resp.json();
-
-        //   console.log(sessionData);
-
-        //   setSession(sessionData);
-        //   router.push("/dashboard");
-        // }
-
-        // Simulate a delay
-        router.push("/dashboard");
-      } else if (response.status === 403) {
-        // Handle the unverified user case
-        router.push("/signup/confirm?email=" + values.email);
+        setIsSubmitting(false);
+        // const data = await response.json();
+        // console.log(data);
+        router.push("/forgot/confirm?email=" + values.email);
       } else {
-        const resp = await response.json();
-        if (resp.error === "NotAuthorizedException") {
-          setErrorMessage("Invalid email or password.");
-        } else {
-          setErrorMessage("An error occurred. Please try again.");
-        }
-        // Handle other errors
-        // Example: display a generic error message
+        const data = await response.json();
+        console.log(data);
+        // setErrorMessage(data.message);
+        // setTimeout(() => {
+        //   setIsSubmitting(false);
+        // }, 2000);
         setIsSubmitting(false);
       }
+
     } catch (e) {
       console.error(e);
       // setTimeout(() => {
@@ -117,7 +88,7 @@ export default function Login() {
 
   return (
     <Layout>
-      <HeadElements title="Login" />
+      <HeadElements title="Forgot Password" />
       <div className="mt-20">
         <Image
           src="/real.svg"
@@ -128,9 +99,8 @@ export default function Login() {
           className="hover:cursor-pointer"
         />
         <Spacer />
-        <Heading>Login</Heading>
+        <Heading>Forgot Password</Heading>
         <Spacer />
-        {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
@@ -150,37 +120,12 @@ export default function Login() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-white">Password</FormLabel>
-                  <FormControl className="bg-transparent border-gray-700">
-                    <Input
-                      type="password"
-                      placeholder="********"
-                      className="focus:border-ring focus-visible:ring-0 focus:outline-none text-white"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage className="text-red-400" />
-                </FormItem>
-              )}
-            />
-            <Link
-              href="/forgot"
-              className="bg-transparent hover:bg-transparent text-gray-400 flex ml-auto"
-              onClick={onClickForgotPassword}
-            >
-              <span className="ml-auto text-sm">Forgot Password?</span>
-            </Link>
             <GradientButton
               loading={isSubmitting}
               type="submit"
               className="w-full"
             >
-              Login
+              Submit
             </GradientButton>
           </form>
         </Form>
