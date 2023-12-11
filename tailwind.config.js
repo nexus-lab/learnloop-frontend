@@ -25,6 +25,7 @@ module.exports = {
         ringactive: "#6D767E",
         dashboard: "#0F0F0F",
         divider: "#303030",
+        dropdown: "#121212",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

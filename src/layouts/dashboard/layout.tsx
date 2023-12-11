@@ -1,12 +1,14 @@
+import React from "react";
 import { QuizTool } from "@/src/components/QuizTool";
 import { UserMenu } from "@/src/components/User";
-import { useSessionCheck } from "@/src/hooks/useSessionCheck";
+import { FaCube } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
 import router from "next/router";
+import { usePathname } from "next/navigation";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  // useSessionCheck();
+  const pathname = usePathname();
 
   const onClickExplore = (e: any) => {
     e.preventDefault();
@@ -26,19 +28,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     }
   };
 
-  return (
-    <div className="flex h-full w-full" style={{ backgroundColor: "#0F0F0F" }}>
-      {/* Left Column -- Navigation */}
-      <div className="flex flex-col w-1/5">
-        {/* Content for the left column goes here */}
-        {/* ... */}
+  const gLC = (href: string) => {
+    return pathname.includes(href) ? "text-white" : "text-gray-500";
+  };
 
+  return (
+    <div
+      className="flex flex-col lg:flex-row lg:h-screen w-full"
+      style={{ backgroundColor: "#0F0F0F" }}
+    >
+      {/* Left Column -- Navigation */}
+      <div className="flex flex-col w-full lg:w-1/5 px-8">
         <Image
           src="/real.svg"
-          width={200}
-          height={200}
+          width={150}
+          height={150}
           alt="Learnloop"
-          className="cursor-pointer lg:ml-6 mt-10"
+          className="cursor-pointer mt-10"
         />
 
         <UserMenu
@@ -49,23 +55,48 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
         <Link
           href="/dashboard"
-          className="bg-divider rounded-sm py-2 px-2 flex mr-8 ml-8 mt-6"
           onClick={onClickExplore}
+          className="bg-transparent w-full hover:bg-divider rounded-sm py-2 px-2 flex items-center justify-between my-6"
         >
-          <p className="text-white">Explore</p>
+          <p className="text-white text-sm">Explore</p>
+          <FaCube className="text-white" />
         </Link>
 
-        <h1 className="font-bold text-xl text-white ml-8 mt-10">
+        <h1 className="font-bold text-xl text-white text-center lg:text-left mt-10">
           Official Tools
         </h1>
         <QuizTool />
       </div>
 
       {/* Vertical Divider */}
-      <div className="w-px bg-divider"></div>
+      <div className="hidden lg:block w-px bg-divider"></div>
 
       {/* Right Column -- Content */}
-      <div className="flex flex-col w-4/5">{children}</div>
+      <div className="flex flex-col w-full">
+        {pathname.includes("/dashboard/quiz") && (
+          <div className="flex flex-col lg:flex-row p-8 space-x-0 lg:space-x-4 space-y-4 lg:space-y-0">
+            <Link
+              href="/dashboard/quiz/create"
+              className={gLC("/dashboard/quiz/create") + " text-lg"}
+            >
+              Create
+            </Link>
+            <Link
+              href="/dashboard/quiz/textbooks"
+              className={gLC("/dashboard/quiz/textbooks") + " text-lg"}
+            >
+              Textbooks
+            </Link>
+            <Link
+              href="/dashboard/quiz/quizzes"
+              className={gLC("/dashboard/quiz/quizzes") + " text-lg"}
+            >
+              Quizzes
+            </Link>
+          </div>
+        )}
+        {children}
+      </div>
     </div>
   );
 }

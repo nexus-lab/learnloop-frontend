@@ -51,26 +51,26 @@ export default function Home() {
 
         {/* Main Column - Fills remaining space */}
         <div
-          className="flex-1 px-20 bg-main overflow-auto"
+          className="flex-1 px-4 sm:px-10 md:px-20 bg-main overflow-auto"
           style={{
             backgroundImage: "url(/pattern.svg)",
             backgroundRepeat: "no-repeat",
-            backgroundPosition: "center", // Centers the background image
+            backgroundPosition: "center",
           }}
         >
           {/* Navigation */}
-          <div className="flex justify-center items-center pt-10 mb-40">
+          <div className="flex flex-col sm:flex-row justify-center items-center pt-10 mb-20 sm:mb-40">
             <Image
               src="/real.svg"
-              width={200}
-              height={200}
+              width={150}
+              height={150}
               alt="Learnloop"
               className="cursor-pointer"
               onClick={goBack}
             />
             <TransparentButton
               variant={"ghost"}
-              className="ml-auto text-md font-regular"
+              className="mt-4 sm:mt-0 sm:ml-auto text-md font-regular"
               onClick={handleLoginClick}
             >
               Login
@@ -78,13 +78,13 @@ export default function Home() {
           </div>
 
           <div
-            className="flex flex-col justify-center space-y-20"
+            className="flex flex-col justify-center space-y-10 md:space-y-20"
             aria-label="features"
           >
-            <h1 className="text-4xl text-center font-bold text-white">
+            <h1 className="text-2xl md:text-4xl text-center font-bold text-white">
               Learn differently with the power of AI
             </h1>
-            <p className="text-lg text-greytext px-72 text-center">
+            <p className="text-base md:text-lg text-greytext px-4 md:px-72 text-center">
               Revolutionize your study sessions with Learnloop&apos;s AI-powered
               quiz generator. Upload your textbook, select chapters, and get a
               tailored quiz instantly. Beyond quizzes, envision a future with
@@ -92,7 +92,7 @@ export default function Home() {
               coding playground.
             </p>
             <GradientButton
-              className="ml-4 w-[36rem] h-12 self-center"
+              className="w-full sm:w-[36rem] h-12 self-center"
               onClick={handleSignupClick}
             >
               Get Started

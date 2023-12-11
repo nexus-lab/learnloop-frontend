@@ -4,6 +4,7 @@ import { GradientButton } from "@/src/components/GradientButton";
 import { Heading } from "@/src/components/Heading";
 import { Input } from "@/src/components/ui/input";
 import { FaSearch } from "react-icons/fa";
+import HeadElements from "@/src/components/misc/HeadElements";
 
 export default function Dashboard() {
   const { session } = useSession();
@@ -11,6 +12,7 @@ export default function Dashboard() {
   // console.log(session);
   return (
     <div className="p-8">
+      <HeadElements title="Dashboard" />
       <div className="flex items-center space-x-8">
         <Heading>Explore</Heading>
         <GradientButton type="submit" className="text-sm px-7 py-2" size="sm">

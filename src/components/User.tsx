@@ -28,7 +28,7 @@ export function UserMenu({ imageUrl = 'https://images.unsplash.com/photo-1682687
   return (
     <DropdownMenu>
       {/* Image-Name-IconButton Layout */}
-      <div className="flex flex-row mb-2 px-8 mt-16">
+      <div className="flex flex-row mb-2 mt-16">
         <Image src={imageUrl} alt={name} className="h-8 w-8 rounded-full self-center" width={200} height={200} />
         <span className="text-white font-normal self-center ml-4 mr-4 text-sm">{name}</span>
         <DropdownMenuTrigger asChild className='self-center ml-auto'>
