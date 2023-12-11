@@ -190,7 +190,7 @@ export default function QuizCreation() {
                 >
                   <FormControl>
                     <SelectTrigger className="bg-transparent border-[1px] border-divider">
-                      <SelectValue placeholder="Select a verified email to display" />
+                      <SelectValue placeholder="Select a difficulty" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent className="bg-dropdown border-[1px] border-divider text-white">
