@@ -6,7 +6,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // Confirm user
         const response = await verifyUser({
             email: req.body.email,
-            confirmation_code: req.body.code,
+            confirmation_code: req.body.confirmation_code,
         });
 
         // Handle errors
