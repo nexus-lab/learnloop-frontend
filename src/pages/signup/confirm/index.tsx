@@ -83,8 +83,12 @@ export default function ProfileForm() {
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log('Submitted confirmation code:', values.confirmation_code);
+    console.log('Form submission values:', values);
     setIsSubmitting(true);
+    
     const email = searchParams.get("email");
+    console.log('Email from search params:', email);
 
     try {
       const response = await fetch("/api/auth/confirm", {
@@ -94,6 +98,9 @@ export default function ProfileForm() {
         },
         body: JSON.stringify({email: email as string, confirmation_code: values.confirmation_code}),
       });
+      
+      console.log('Fetch response:', response); 
+      console.log('confirmation code:',values.confirmation_code)
       
       if (response.status === 200) {
         router.push("/login");
