@@ -11,7 +11,7 @@ export default function Dashboard() {
 
   // console.log(session);
   return (
-    <div className="p-8">
+    <div className="p-8 h-screen">
       <HeadElements title="Dashboard" />
       <div className="flex items-center space-x-8">
         <Heading>Explore</Heading>
