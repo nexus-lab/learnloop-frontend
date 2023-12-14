@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Layout from "@/src/layouts/dashboard/layout";
 import { Heading } from "@/src/components/Heading";
 import { useRouter } from "next/router";
@@ -8,6 +8,11 @@ import { OutlineInput } from "@/src/components/OutlineInput";
 
 export default function CreateTextbook() {
   const router = useRouter();
+  const [showChapterInputs, setShowChapterInputs] = useState(false);
+
+  const handleAddChapterClick = () => {
+    setShowChapterInputs(!showChapterInputs);
+  };
   return (
     <>
       <div className="flex ">
@@ -32,9 +37,23 @@ export default function CreateTextbook() {
           <div className="text-white text-sm mt-10 mb-5">Textbook Name</div>
           <OutlineInput placeholder=" ex: textbook"></OutlineInput>
           <div className="text-white text-sm mt-10 mb-5">Chapters</div>
-          <OutlineButton className="text-sm text-blue-900 ">
+          <OutlineButton
+            onClick={handleAddChapterClick}
+            className="text-sm text-blue-900"
+          >
             Add Chapter
           </OutlineButton>
+
+          {showChapterInputs && (
+            <div>
+              <div className="text-white text-sm mt-10 mb-5">Chapter Name</div>
+              <OutlineInput placeholder="Enter chapter name"></OutlineInput>
+              <div className="text-white text-sm mt-10 mb-5">Start Page</div>
+              <OutlineInput placeholder="Enter start page"></OutlineInput>
+              <div className="text-white text-sm mt-10 mb-5">End Page</div>
+              <OutlineInput placeholder="Enter end page"></OutlineInput>
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col ml-20 mr-20 w-full">
