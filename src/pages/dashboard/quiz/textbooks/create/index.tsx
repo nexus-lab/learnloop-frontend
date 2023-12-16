@@ -15,10 +15,10 @@ export default function CreateTextbook() {
   };
   return (
     <>
-      <div className="flex ">
+      <div className="flex text-white">
         <div className="flex flex-col mx-8 ">
           <div className="flex items-center space-x-8 ">
-            <div className="text-white text-md ">Textbooks</div>
+            <h1 className="text-lg font-semibold">Textbooks</h1>
 
             <GradientButton
               onClick={() => {

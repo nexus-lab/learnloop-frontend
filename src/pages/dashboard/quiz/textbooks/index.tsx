@@ -11,8 +11,8 @@ export default function Textbooks() {
   const router = useRouter();
   return (
     <>
-      <div className="flex items-center space-x-8 mx-8">
-        <div className="text-white text-md ">Textbooks</div>
+      <div className="flex items-center space-x-8 mx-8 text-white">
+        <h1 className="text-lg font-semibold">Textbooks</h1>
         <GradientButton
           onClick={() => {
             router.push("./textbooks/create");
