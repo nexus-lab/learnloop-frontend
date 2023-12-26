@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 
-export const OutlineInputFile = ({ ...props }) => {
+export const OutlineInputFile = ({ onFileSelect, ...props }) => {
     const [fileName, setFileName] = useState('');
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         setFileName(file ? file.name : '');
+
+        // Call the callback function with the selected file
+        if (onFileSelect) {
+            onFileSelect(file);
+        }
     };
 
     return (

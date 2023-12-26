@@ -34,11 +34,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div
-      className="flex flex-col lg:flex-row lg:h-screen w-full"
-      style={{ backgroundColor: "#0F0F0F" }}
+      className="flex flex-col lg:flex-row w-full"
+      style={{ backgroundColor: "#0F0F0F", height: "100vh", overflow: "hidden" }}
     >
       {/* Left Column -- Navigation */}
-      <div className="flex flex-col w-full lg:w-1/5 px-8">
+      <div className="flex flex-col w-full lg:w-1/5 px-8" style={
+        {
+          height: "100vh",
+          overflowY: "auto"
+        }
+      }>
         <Image
           src="/real.svg"
           width={150}
@@ -72,7 +77,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <div className="hidden lg:block w-px bg-divider"></div>
 
       {/* Right Column -- Content */}
-      <div className="flex flex-col w-full">
+      <div className="flex flex-col w-full" style={
+        {
+          height: "100vh",
+          overflowY: "auto"
+        }
+      }>
         {pathname.includes("/dashboard/quiz") && (
           <div className="flex flex-col lg:flex-row p-8 space-x-0 lg:space-x-4 space-y-4 lg:space-y-0">
             <Link
