@@ -10,7 +10,7 @@ export default function Quizzes() {
           <FaSearch className="text-white mx-2" />
           <input
             className="w-full pl-2 py-2 text-white bg-transparent outline-none"
-            placeholder="Search for a textbook..."
+            placeholder="Search for a Quiz..."
             type="text"
           />
         </div>
