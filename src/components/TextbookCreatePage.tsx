@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import { useRouter } from "next/router";
 import { OutlineInputFile } from "@/src/components/OutlineInputFile";
 import { OutlineInput } from "@/src/components/OutlineInput";
@@ -11,6 +11,7 @@ import { FaChevronLeft, FaChevronRight, FaTrash } from "react-icons/fa";
 import type { PDFDocumentProxy } from "pdfjs-dist";
 import Layout from "../layouts/dashboard/layout";
 import { set } from "react-hook-form";
+import { Chapter } from "@/lib/api/chapters/routes";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -28,15 +29,19 @@ const maxWidth = 800;
 export default function CreateTextbook() {
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
+  const [image_file, setImageFile] = useState<File | null>(null);
+  const [title, setTitle] = useState<string>("");
+  const [nickname, setNickname] = useState<string>("");
   const [numPages, setNumPages] = useState<number>(0);
   const [current_page, setCurrentPage] = useState<number>(0);
   const [containerRef, setContainerRef] = useState<HTMLElement | null>(null);
   const [containerWidth, setContainerWidth] = useState<number>();
   const [pdfData, setPdfData] = useState<{ data: Uint8Array } | null>(null);
-  const [numberOfChapters, setNumberOfChapters] = useState<number>(0);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const [chapters, setChapters] = useState<
-    Array<{ name: string; startPage: number; endPage: number }>
+    Array<Chapter>
   >([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const onResize = useCallback<ResizeObserverCallback>((entries) => {
     const [entry] = entries;
@@ -48,13 +53,27 @@ export default function CreateTextbook() {
 
   useResizeObserver(containerRef, resizeObserverOptions, onResize);
 
-  const handleFileSelect = (file: File) => {
-    setFile(file);
+  const handleFileSelect = (selectedFile: File) => {
+    setFile(selectedFile);
 
-    if (file)
-      file.arrayBuffer().then((data) => {
+    if (selectedFile) {
+      selectedFile.arrayBuffer().then((data) => {
         setPdfData({ data: new Uint8Array(data) });
       });
+    }
+  };
+
+  const handleImageFileSelect = (selectedImageFile: File) => {
+    setImageFile(selectedImageFile);
+
+    if (selectedImageFile) {
+      // Generate and set image preview URL only if a file is selected
+      const fileUrl = URL.createObjectURL(selectedImageFile);
+      setImagePreviewUrl(fileUrl);
+    } else {
+      // If no file is selected (e.g., upload is cancelled), clear the preview
+      setImagePreviewUrl(null);
+    }
   };
 
   const onDocumentLoadSuccess = ({
@@ -65,7 +84,7 @@ export default function CreateTextbook() {
 
   const handleAddChapterClick = () => {
     if (chapters.length < 10) {
-      setChapters([...chapters, { name: "", startPage: 0, endPage: 0 }]);
+      setChapters([...chapters, { chapter_title: "", start_page: 0, end_page: 0 }]);
     }
   };
 
@@ -95,23 +114,53 @@ export default function CreateTextbook() {
     }
   };
 
+  const handleTitleChange = (event) => {
+    setTitle(event.target.value);
+  };
+
+  const handleNicknameChange = (event) => {
+    setNickname(event.target.value);
+  };
+
   const handleCreateTextbook = async () => {
     const formData = new FormData();
     formData.append("file", file as Blob);
-    formData.append("title", "textbook");
-    formData.append("nickname", "textbook");
-    formData.append("image_file", file as Blob);
+    formData.append("title", title);
+    formData.append("nickname", nickname);
+    formData.append("image_file", image_file as Blob);
 
-    const response = await fetch("/api/textbooks/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      body: formData,
-    });
-
-    console.log(response)
+    // Try textbook creation
+    try {
+      setLoading(true);
+      await fetch("/api/textbooks/create", {
+        method: "POST",
+        body: formData,
+      }).then(async (res) => {
+        let js = await res.json();
+        await fetch("/api/chapters/create", {
+          method: "POST",
+          body: JSON.stringify({
+            textbook_id: js.response.textbook_id,
+            chapters: chapters,
+          }),
+        }).then((res) => {
+          setLoading(false);
+          router.push("/dashboard/quiz/textbooks");
+        })
+      });
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    return () => {
+      if (imagePreviewUrl) {
+        URL.revokeObjectURL(imagePreviewUrl);
+      }
+    };
+  }, [imagePreviewUrl]);
 
   return (
     <>
@@ -119,35 +168,46 @@ export default function CreateTextbook() {
         <div className="flex flex-row text-white mx-8 space-x-8">
           <div className="flex flex-col w-full">
             <div className="flex items-center space-x-8">
-              <h1 className="text-lg font-semibold">Textbooks</h1>
-
-              {/* <GradientButton
-                onClick={() => {
-                  router.push("./textbooks/create");
-                }}
-                className="text-sm px-8 py-2"
-                size="sm"
-              >
-                Create a new textbook
-              </GradientButton> */}
+              <FaChevronLeft className="text-white text-sm cursor-pointer" onClick={()=>router.back()} />
+              <h1 className="text-lg font-semibold">Create a Textbook</h1>
             </div>
+            <div className="text-white text-sm mt-10 mb-5">
+              Upload a textbook cover image (.png, .jpg, .jpeg)
+            </div>
+            {imagePreviewUrl && (
+              <div className="mt-4">
+                <img
+                  src={imagePreviewUrl}
+                  alt="Image Preview"
+                  className="max-w-xs max-h-36 mb-10 border border-divider rounded-sm py-2 px-2"
+                />
+              </div>
+            )}
+            <OutlineInputFile onFileSelect={handleImageFileSelect} />
             <div className="text-white text-sm mt-10 mb-5">
               Upload a textbook file (.pdf, .docx, doc)
             </div>
-            <OutlineInputFile
-              onFileSelect={handleFileSelect}
-            ></OutlineInputFile>
+            <OutlineInputFile onFileSelect={handleFileSelect} />
             {/* <OutlineButton className="text-white text-sm ">Upload</OutlineButton> */}
             <div className="text-white text-sm mt-10 mb-5">Textbook Name</div>
-            <OutlineInput placeholder="ex: textbook"></OutlineInput>
+            <OutlineInput
+              placeholder="ex: textbook"
+              value={title}
+              onChange={handleTitleChange}
+            />
+
             <div className="text-white text-sm mt-10 mb-5">
               Textbook Nickname
             </div>
-            <OutlineInput placeholder="ex: science book"></OutlineInput>
+            <OutlineInput
+              placeholder="ex: science book"
+              value={nickname}
+              onChange={handleNicknameChange}
+            />
             <div className="text-white text-sm mt-10 mb-5">
               Chapters (maximum of 10)
             </div>
-            {numberOfChapters < 10 ? (
+            {chapters.length < 10 ? (
               <OutlineButton
                 onClick={handleAddChapterClick}
                 className="text-sm font-normal text-white"
@@ -172,10 +232,10 @@ export default function CreateTextbook() {
                     <p className="text-sm mb-3">Chapter Name</p>
                     <OutlineInput
                       placeholder="Enter chapter name"
-                      value={chapter.name}
+                      value={chapter.chapter_title}
                       className="text-white text-sm"
                       onChange={(e: any) =>
-                        handleChapterChange(index, "name", e.target.value)
+                        handleChapterChange(index, "chapter_title", e.target.value)
                       }
                     />
                   </div>
@@ -184,10 +244,10 @@ export default function CreateTextbook() {
                     <p className="text-sm mb-3">Chapter Start Page</p>
                     <OutlineInput
                       placeholder="Enter start page"
-                      value={chapter.startPage}
+                      value={chapter.start_page}
                       className="text-white text-sm"
                       onChange={(e: any) =>
-                        handleChapterChange(index, "startPage", e.target.value)
+                        handleChapterChange(index, "start_page", e.target.value)
                       }
                     ></OutlineInput>
                   </div>
@@ -195,10 +255,10 @@ export default function CreateTextbook() {
                     <p className="text-sm mb-3">Chapter End Page</p>
                     <OutlineInput
                       placeholder="Enter end page"
-                      value={chapter.startPage}
+                      value={chapter.end_page}
                       className="text-white text-sm"
                       onChange={(e: any) =>
-                        handleChapterChange(index, "endPage", e.target.value)
+                        handleChapterChange(index, "end_page", e.target.value)
                       }
                     ></OutlineInput>
                   </div>
@@ -275,6 +335,7 @@ export default function CreateTextbook() {
         <GradientButton
           onClick={handleCreateTextbook}
           className="text-sm px-8 py-4 mt-10 mx-8 mb-8"
+          loading={loading}
         >
           Create a new textbook
         </GradientButton>
