@@ -6,7 +6,23 @@ import { Input } from "@/src/components/ui/input";
 import { FaSearch } from "react-icons/fa";
 import HeadElements from "@/src/components/misc/HeadElements";
 import { useRouter } from "next/router";
+import TextbookCard from "@/src/components/TextbookCard";
 
+export interface Textbook {
+  id: number;
+  image_url: string;
+  title: string;
+  isbn: string;
+}
+const mockTextbooks: Textbook[] = [
+  {
+    id: 1,
+    image_url: "/images/opsys.png",
+    title: "Operating System Concepts",
+    isbn: "123-4567890123",
+  },
+];
+const handleSelectBook = (book: Textbook) => {};
 export default function Textbooks() {
   const router = useRouter();
   return (
@@ -30,6 +46,17 @@ export default function Textbooks() {
           placeholder="Search for a textbook..."
           type="text"
         />
+      </div>
+      <div className=" mt-10 mx-8">
+        {mockTextbooks.map((book) => (
+          <TextbookCard
+            key={book.id}
+            image_url={book.image_url}
+            title={book.title}
+            isbn={book.isbn}
+            onSelect={() => handleSelectBook(book)}
+          />
+        ))}
       </div>
     </>
   );
