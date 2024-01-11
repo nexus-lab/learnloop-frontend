@@ -7,7 +7,23 @@ import { Textbooks } from "@/src/components/Textbooks";
 import { useState } from "react";
 import useViewTransitionRouter from "@/src/hooks/useViewTransitionRouter";
 import { TextbooksList } from "@/src/components/TextbooksList";
+import TextbookCard from "@/src/components/TextbookCard";
 
+export interface Textbook {
+  id: number;
+  image_url: string;
+  title: string;
+  isbn: string;
+}
+const mockTextbooks: Textbook[] = [
+  {
+    id: 1,
+    image_url: "/images/opsys.png",
+    title: "Operating System Concepts",
+    isbn: "123-4567890123",
+  },
+];
+const handleSelectBook = (book: Textbook) => {};
 export default function TextbooksPage() {
   const router = useViewTransitionRouter();
   const [search, setSearch] = useState("");
