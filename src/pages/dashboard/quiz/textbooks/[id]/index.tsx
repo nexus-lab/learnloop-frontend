@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 /**
  * Critical: prevents "TypeError: url.replace is not a function" error
  */
-const TPage = dynamic(() => import("@/src/components/TextbookCreatePage"), {
+const TPage = dynamic(() => import("@/src/components/TextbookEditPage"), {
   ssr: false,
 });
 

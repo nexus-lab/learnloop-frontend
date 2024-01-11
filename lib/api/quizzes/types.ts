@@ -11,8 +11,9 @@ enum QuizFormat {
 }
 
 type GenerateQuizParams = {
-    chapter_id: number;
+    chapter_id?: number;
     number_of_questions: number;
-    difficulty: QuizDifficulty;
-    form: QuizFormat;
+    difficulty: string;
+    form: string;
+    prompt?: string;
 };

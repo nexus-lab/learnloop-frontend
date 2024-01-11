@@ -11,7 +11,7 @@ export const config = {
 };
 
 // Helper function to check file extension
-function checkExtension(filename, extensions) {
+function checkExtension(filename: string, extensions: string[]) {
   return extensions.some((ext) => filename.toLowerCase().endsWith(ext));
 }
 
@@ -26,8 +26,18 @@ export default async function POST(req: NextApiRequest, res: NextApiResponse) {
 
     const form = formidable({});
     let fields, files;
+
+    interface Parsed {
+      fields: any;
+      files: any;
+    }
+
+    interface Err {
+      httpCode: number;
+    }
+
     try {
-      const parsed = await new Promise((resolve, reject) => {
+      const parsed: Parsed = await new Promise((resolve, reject) => {
         form.parse(req, (err, fields, files) => {
           if (err) reject(err);
           else resolve({ fields, files });
@@ -36,7 +46,7 @@ export default async function POST(req: NextApiRequest, res: NextApiResponse) {
 
       fields = parsed.fields;
       files = parsed.files;
-    } catch (err) {
+    } catch (err: Err | any) {
       console.error(err);
       res.writeHead(err.httpCode || 400, { "Content-Type": "text/plain" });
       res.end(String(err));

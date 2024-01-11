@@ -169,7 +169,7 @@ export default function CreateTextbook() {
           <div className="flex flex-col w-full">
             <div className="flex items-center space-x-8">
               <FaChevronLeft className="text-white text-sm cursor-pointer" onClick={()=>router.back()} />
-              <h1 className="text-lg font-semibold">Create a Textbook</h1>
+              <h1 className="text-lg font-semibold">Edit</h1>
             </div>
             <div className="text-white text-sm mt-10 mb-5">
               Upload a textbook cover image (.png, .jpg, .jpeg)
@@ -337,7 +337,7 @@ export default function CreateTextbook() {
           className="text-sm px-8 py-4 mt-10 mx-8 mb-8"
           loading={loading}
         >
-          Create a new textbook
+          Update textbook
         </GradientButton>
       </div>
     </>
